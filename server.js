@@ -1,7 +1,7 @@
 import express from "express";
 import mongoose from "mongoose";
 import cors from "cors";
-import path from "path";
+import dotenv from "dotenv";
 
 // ROUTES
 import authRoutes from "./routes/authRoutes.js";
@@ -12,15 +12,17 @@ import supplierRoutes from "./routes/supplierRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 import categoryRoutes from "./routes/categoryRoutes.js";
 
+dotenv.config();
+
 const app = express();
 
 // ================= MIDDLEWARE =================
 app.use(cors());
 app.use(express.json());
-app.use(express.urlencoded({ extended: true })); // ✅ important for forms
+app.use(express.urlencoded({ extended: true }));
 
 // ================= STATIC FILES =================
-app.use("/uploads", express.static("uploads")); // ✅ clean & safe
+app.use("/uploads", express.static("uploads"));
 
 // ================= ROUTES =================
 app.use("/api/auth", authRoutes);
@@ -38,7 +40,7 @@ app.get("/", (req, res) => {
 
 // ================= DATABASE =================
 mongoose
-  .connect("mongodb://127.0.0.1:27017/inventoryERP")
+  .connect(process.env.MONGO_URI)
   .then(() => {
     console.log("MongoDB Connected 🚀");
   })
@@ -47,7 +49,7 @@ mongoose
   });
 
 // ================= SERVER =================
-const PORT = 5000;
+const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
   console.log(`Server Running On Port ${PORT} 🚀`);
